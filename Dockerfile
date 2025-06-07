@@ -1,14 +1,14 @@
-# Use OpenJDK base image
+# Use official OpenJDK image
 FROM openjdk:17-jdk-slim
 
-# Create app directory inside container
+# Set working directory
 WORKDIR /app
 
-# Copy WAR file from host to container
-COPY target/employemanagement-0.0.1-SNAPSHOT.war app.war
+# Copy the built jar file (change name if needed)
+COPY target/employemanagement-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose port
+# Expose port 8080
 EXPOSE 8080
 
-# Run the WAR file
-ENTRYPOINT ["java", "-jar", "app.war"]
+# Run the jar file
+ENTRYPOINT ["java","-jar","app.jar"]
