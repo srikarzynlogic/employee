@@ -1,14 +1,28 @@
-# Use official OpenJDK image
-FROM openjdk:17-jdk-slim
+# Stage 1: Build the app using Maven (with JDK 17)
+FROM maven:3.9.3-eclipse-temurin-17 AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy the built jar file (change name if needed)
-COPY target/employemanagement-0.0.1-SNAPSHOT.jar app.jar
+# Copy pom.xml and download dependencies (cache layer)
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Expose port 8080
+# Copy the source code
+COPY src ./src
+
+# Build the application jar, skip tests for faster build
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the app using lightweight JDK 17 image
+FROM eclipse-temurin:17-jdk-alpine
+
+WORKDIR /app
+
+# Copy the built jar from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port 8080 for your Spring Boot app
 EXPOSE 8080
 
-# Run the jar file
-ENTRYPOINT ["java","-jar","app.jar"]
+# Run the jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
