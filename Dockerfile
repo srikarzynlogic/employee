@@ -13,7 +13,7 @@ FROM eclipse-temurin:17
 WORKDIR /app
 
 # Copy the JAR file from the build stage
-COPY --from=build /app/target/HRM-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/employemanagement-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the application's port
 EXPOSE 8080
