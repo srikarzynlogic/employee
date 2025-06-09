@@ -1,23 +1,20 @@
-# Stage 1: Build the JAR
+# Stage 1: Build the WAR
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy all project files
+# Copy project files and build
 COPY . .
-
-# Build the application
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the app
 FROM eclipse-temurin:17
 WORKDIR /app
 
-# Copy the JAR file from the build stage
-COPY --from=build /app/target/employemanagement-0.0.1-SNAPSHOT.jar app.jar
+# Copy the WAR file from the build stage
+COPY --from=build /app/target/employemanagement-0.0.1-SNAPSHOT.war app.war
 
-# Expose the application's port
+# Expose the port
 EXPOSE 8080
 
-# Run the JAR
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
+# Run the WAR (Spring Boot treats WARs like JARs if embedded Tomcat is used)
+ENTRYPOINT ["java", "-jar", "app.war"]
