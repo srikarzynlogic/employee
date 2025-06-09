@@ -1,23 +1,23 @@
-# Stage 1: Build the app
-FROM maven:3.9.3-eclipse-temurin-17 AS build
-
+# Stage 1: Build the JAR
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Copy all project files
+COPY . .
 
-COPY src ./src
-
+# Build the application
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the app
-FROM eclipse-temurin:17-jdk-alpine
-
+FROM eclipse-temurin:17
 WORKDIR /app
 
-# Copy any jar found in the target directory (handles variable names)
-COPY --from=build /app/target/*.jar app.jar
+# Copy the JAR file from the build stage
+COPY --from=build /app/target/HRM-0.0.1-SNAPSHOT.jar app.jar
 
+# Expose the application's port
 EXPOSE 8080
 
+# Run the JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
