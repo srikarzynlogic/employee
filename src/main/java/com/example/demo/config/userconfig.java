@@ -14,7 +14,7 @@ public class userconfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow all paths
-                .allowedOrigins("http://localhost:8081") // ✅ Specific origin
+                .allowedOrigins("https://nimble-workforce-hub.vercel.app/") // ✅ Specific origin
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true); 

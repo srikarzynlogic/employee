@@ -11,6 +11,7 @@ import com.example.demo.Entity.userentity;
 import com.example.demo.Repository.IRepository;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 @Service
 public class userservice {
 	@Autowired
@@ -42,7 +43,17 @@ public class userservice {
                 HttpStatus.NOT_FOUND, "User not found with ID: " + id
             ));
     }
+     @Transactional
+    public userentity updateUserById(Integer id, userentity updatedUser) {
+        userentity existingUser = repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-	
+        existingUser.setName(updatedUser.getName());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setPassword(updatedUser.getPassword());
+        // Add any other fields you want to update
+
+        return repo.save(existingUser);
+    }
     
 }
